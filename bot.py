@@ -51,11 +51,11 @@ async def start(update: Update, context: CallbackContext):
         parse_mode="HTML"
     )
 # Obsługa kliknięcia przycisków
-async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def button_handler(update: Update, context: CallbackContext):
     query = update.callback_query
     await query.answer()
 
- if query.data == 'deposit':
+    if query.data == 'deposit':
         await query.edit_message_text(
             "<b>🔐 Wybierz kryptowalutę do wpłaty:</b>\n\n"
             "🪙 <b>Bitcoin (BTC)</b>\n<code>bc1qsnq04cr8mzyna6yr047g4vrl43rzfhr0ppt63y</code>\n\n"
