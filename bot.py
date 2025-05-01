@@ -15,14 +15,41 @@ crypto_wallets = {
 }
 
 withdraw_methods = [
-    "Czek BLIK", "Kod BLIK", "Przelew bankowy", "PayPal", "Revolut", "ZEN"
+    "Kod Blik", "Przelew bankowy", "PayPal", "Revolut", "Zen"
 ]
+
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
 # --- HANDLERY ---
 async def start(update: Update, context: CallbackContext):
-    await update.message.reply_text(
-        "👋 Witaj! Ten bot pozwala Ci wpłacić kryptowaluty i zlecić wypłatę.\n\n" +
-        "/deposit - Wpłata krypto\n/withdraw - Wypłata\n/balance - Saldo"
+    keyboard = [
+        [InlineKeyboardButton("📥 Wpłać krypto", callback_data='deposit')],
+        [InlineKeyboardButton("📤 Wypłać środki", callback_data='withdraw')],
+        [InlineKeyboardButton("💰 Sprawdź saldo", callback_data='balance')]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    photo_url = "https://imgur.com/a/xBGaXs7.jpg"  
+
+    await update.message.reply_photo(
+        photo=photo_url,
+        caption=(
+            "<b>🤖 WITAMY W AUTOMATYCZNYM KANTORZE KRYPTOWALUT!</b>\n\n"
+            
+            "💸 Wymieniaj <b>Bitcoin, USDT, ETH, Litecoin</b>\n"
+            "➡️ Na <b>Kod Blik, PayPal, Revolut, Zen, Przelew Bankowy</b>\n\n"
+            
+            "✂️ Pobieramy tylko <b>8%</b> niezaleznie od kwoty!\n"
+            
+            "• Minimalna kwota wymiany to <b>150PLN</b>\n"
+            "• Maksymalna kwota wymiany to <b>50,000PLN</b>\n"
+
+            "<b>Niezależnie od godziny – działamy non stop, 24/7. Wymieniaj kiedy chcesz.</b>\n"
+
+            "👇 Wybierz opcję:"
+        ),
+        reply_markup=reply_markup,
+        parse_mode="HTML"
     )
 
 async def deposit(update: Update, context: CallbackContext):
