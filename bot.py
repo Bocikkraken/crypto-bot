@@ -12,7 +12,6 @@ crypto_wallets = {
     "Ethereum (ETH Network)": "0x6d6F438B2c629A19816F2D07C721bD7C617981d2",
     "Tether USDT (ETH Network)": "0x6d6F438B2c629A19816F2D07C721bD7C617981d2",
     "Litecoin (LTC)": "LWXm8AZ9b18gtQkGM42XPhCH1h48XED8oo"
-    "Solana (SOL Network)": "2YiYDkEoYG4yaeVAVQgoR6yuD6RYEazRmUm6o21BBFpG"
 }
 
 withdraw_methods = [
