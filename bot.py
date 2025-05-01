@@ -41,9 +41,8 @@ async def start(update: Update, context: CallbackContext):
             
             "✂️ Pobieramy tylko <b>8%</b> niezaleznie od kwoty!\n"
             
-            "• Minimalna kwota wymiany to <b>150PLN</b>\n"
-            "• Maksymalna kwota wymiany to <b>50,000PLN</b>\n"
-
+            "• Wymienimy ci <b>min. 150PLN, max 50 000PLN</b>\n"
+        
             "<b>Niezależnie od godziny – działamy non stop, 24/7. Wymieniaj kiedy chcesz.</b>\n"
 
             "👇 Wybierz opcję:"
@@ -51,6 +50,42 @@ async def start(update: Update, context: CallbackContext):
         reply_markup=reply_markup,
         parse_mode="HTML"
     )
+# Obsługa kliknięcia przycisków
+async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+
+ if query.data == 'deposit':
+        await query.edit_message_text(
+            "<b>🔐 Wybierz kryptowalutę do wpłaty:</b>\n\n"
+            "🪙 <b>Bitcoin (BTC)</b>\n<code>bc1qsnq04cr8mzyna6yr047g4vrl43rzfhr0ppt63y</code>\n\n"
+            "💵 <b>USDT (ETH)</b>\n<code>0x6d6F438B2c629A19816F2D07C721bD7C617981d2</code>\n\n"
+            "🌐 <b>Ethereum (ETH)</b>\n<code>0x6d6F438B2c629A19816F2D07C721bD7C617981d2</code>\n\n"
+            "💠 <b>Litecoin (LTC)</b>\n<code>LWXm8AZ9b18gtQkGM42XPhCH1h48XED8oo</code>",
+            parse_mode="HTML"
+             )
+    elif query.data == 'withdraw':
+        await query.edit_message_text(
+            "<b>💸 Wypłata dostępna przez:</b>\n\n"
+            "- Kod BLIK\n- Czek BLIK\n- Przelew bankowy\n- PayPal\n- Revolut\n- Zen",
+            parse_mode="HTML"
+        )
+    elif query.data == 'balance':
+        await query.edit_message_text(
+            "<b>💰 Twoje saldo:</b>\n0.00 PLN",
+            parse_mode="HTML"
+        )
+
+# Uruchomienie bota
+if __name__ == "__main__":
+    app = ApplicationBuilder().token(BOT_TOKEN).build()
+
+    app.add_handler(CommandHandler("start", start))
+    app.add_handler(CallbackQueryHandler(button_handler))
+
+    print("Bot działa...")
+    app.run_polling()
+
 
 async def deposit(update: Update, context: CallbackContext):
     keyboard = [[InlineKeyboardButton(name, callback_data=f"crypto|{name}")] for name in crypto_wallets.keys()]
