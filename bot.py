@@ -11,7 +11,7 @@ import qrcode
 from io import BytesIO
 
 # --- KONFIGURACJA ---
-BOT_TOKEN = os.getenv("BOT_TOKEN") or "TU_WKLEJ_SWÓJ_TOKEN"
+BOT_TOKEN = os.getenv("BOT_TOKEN") or "7725138343:AAEXXIz0nCk6tn0vx6X1lI7b5Ex_iM9NhKI"
 ADMIN_ID = 6178640111  # Wstaw swoje ID Telegram
 
 # --- DANE STAŁE ---
