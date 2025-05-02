@@ -9,12 +9,27 @@ from telegram.ext import (
 from telegram.constants import ParseMode
 import qrcode
 from io import BytesIO
+
 from flask import Flask
 from threading import Thread
 
+# --- KEEP ALIVE SERVER ---
+app = Flask('')
+
+@app.route('/')
+def home():
+    return "✅ Bot działa!"
+
+def run():
+    app.run(host='0.0.0.0', port=8080)
+
+def keep_alive():
+    t = Thread(target=run)
+    t.start()
+
 # --- KONFIGURACJA ---
 BOT_TOKEN = os.getenv("BOT_TOKEN") or "TU_WKLEJ_SWÓJ_TOKEN"
-ADMIN_ID = 6178640111  # Zmień na swoje ID Telegram
+ADMIN_ID = 6178640111  # Wstaw swoje ID Telegram
 
 # --- DANE STAŁE ---
 crypto_wallets = {
@@ -43,7 +58,7 @@ async def start(update: Update, context: CallbackContext):
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    photo_url = "https://imgur.com/a/2KWxJsC.jpg"  # Zmień na swój link do grafiki
+    photo_url = "https://imgur.com/a/3qUzKVy.jpg"  # Zmień na swój link do grafiki
 
     await update.message.reply_photo(
         photo=photo_url,
@@ -117,22 +132,11 @@ async def check_admin(update: Update, context: CallbackContext):
         return await update.message.reply_text("⛔ Brak dostępu.")
     await update.message.reply_text("🛡️ Panel admina — brak automatycznego monitoringu. Sprawdź saldo w portfelu ręcznie.")
 
-# --- HTTP SERWER DO UTRZYMANIA PRZY ŻYCIU ---
-app = Flask('')
-
-@app.route('/')
-def home():
-    return "Bot działa."
-
-def run():
-    app.run(host='0.0.0.0', port=8080)
-
-Thread(target=run).start()
-
-# --- START ---
+# --- START BOTA ---
 if __name__ == '__main__':
-    app_telegram = ApplicationBuilder().token(BOT_TOKEN).build()
+    keep_alive()  # <-- uruchamia serwer Flask
 
+    app_telegram = ApplicationBuilder().token(BOT_TOKEN).build()
     app_telegram.add_handler(CommandHandler("start", start))
     app_telegram.add_handler(CommandHandler("check_admin", check_admin))
     app_telegram.add_handler(CallbackQueryHandler(button_handler))
