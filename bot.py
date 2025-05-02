@@ -41,7 +41,7 @@ async def start(update: Update, context: CallbackContext):
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    photo_url = "https://imgur.com/a/2KWxJsC.jpeg"  # Zmień na swój obrazek
+    photo_url = "https://imgur.com/a/2KWxJsC.jpeg"  # Link do obrazka
 
     await update.message.reply_photo(
         photo=photo_url,
@@ -102,7 +102,7 @@ async def button_handler(update: Update, context: CallbackContext):
     elif data.startswith("withdraw|"):
         _, method = data.split("|")
         await query.message.reply_text(
-            f"✅ Jeżeli już wysłałeś kryptowaluty, napisz do <a href='https://t.me/cocaine7_11'>@cocaine7_11</a> z potwierdzeniem.",
+            "✅ Jeżeli już wysłałeś kryptowaluty, napisz do <a href='https://t.me/cocaine7_11'>@cocaine7_11</a> z potwierdzeniem.",
             parse_mode=ParseMode.HTML
         )
 
