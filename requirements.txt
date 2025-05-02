@@ -1,2 +1,3 @@
-python-telegram-bot==20.6
-qrcode[pil]
+python-telegram-bot==20.8
+qrcode
+flask
