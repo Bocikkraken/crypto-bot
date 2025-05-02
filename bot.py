@@ -10,25 +10,8 @@ from telegram.constants import ParseMode
 import qrcode
 from io import BytesIO
 
-from flask import Flask
-from threading import Thread
-
-# --- KEEP ALIVE SERVER ---
-app = Flask('')
-
-@app.route('/')
-def home():
-    return "✅ Bot działa!"
-
-def run():
-    app.run(host='0.0.0.0', port=8080)
-
-def keep_alive():
-    t = Thread(target=run)
-    t.start()
-
 # --- KONFIGURACJA ---
-BOT_TOKEN = os.getenv("BOT_TOKEN") or "7725138343:AAEXXIz0nCk6tn0vx6X1lI7b5Ex_iM9NhKI"
+BOT_TOKEN = os.getenv("BOT_TOKEN") or "TU_WKLEJ_SWÓJ_TOKEN"
 ADMIN_ID = 6178640111  # Wstaw swoje ID Telegram
 
 # --- DANE STAŁE ---
@@ -52,27 +35,23 @@ withdraw_methods_buttons = [
 # --- HANDLERY ---
 async def start(update: Update, context: CallbackContext):
     keyboard = [
-        [InlineKeyboardButton("📥 Wpłać krypto", callback_data='deposit')],
+        [InlineKeyboardButton("📥 Wpłać kryptowaluty", callback_data='deposit')],
         [InlineKeyboardButton("📤 Wypłać środki", callback_data='withdraw')],
         [InlineKeyboardButton("💰 Sprawdź saldo", callback_data='balance')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    photo_url = "https://imgur.com/a/2KWxJsC.jpg"  # Zmień na swój link do grafiki
+    photo_url = "https://imgur.com/a/2KWxJsC.jpeg"  # Zmień na swój obrazek
 
     await update.message.reply_photo(
         photo=photo_url,
         caption=(
-            "<b>🤖 WITAMY W AUTOMATYCZNYM KANTORZE KRYPTOWALUT!</b>\n\n"
-            "💸 Wymieniaj <b>Bitcoin, USDT, ETH, Litecoin</b>\n"
-            "➡️ Na <b>Kod Blik, PayPal, Revolut, Zen, Przelew Bankowy Polski/Zagraniczny</b>\n\n"
-            "WYMIENIMY CI:\n"
-            "• <b>min. 150PLN</b>\n"
-            "• <b>max. 50 000PLN</b>\n\n"
-            "🕒 Działamy non stop – 24/7\n\n"
-            "<b>DOŁĄCZ DO GRUPY BOTA, ABY DOWIEDZIEĆ SIĘ O: UPDATE, ZNIŻKACH, NAGRODACH ITD.</b>\n"
-            "Grupa Bota - https://t.me/INSTANTCRYPTOEXCH\n\n"
-            "👇 Wybierz opcję:"
+            "<b>🤖 WITAJ W AUTOMATYCZNYM KANTORZE KRYPTOWALUT!</b>\n\n"
+            "💸 Wymieniaj <b>Bitcoin, Ethereum, USDT, Litecoin</b>\n"
+            "➡️ Na <b>Blik, PayPal, Revolut, Zen, Przelew (PL/EU)</b>\n\n"
+            "💰 Kwota: <b>150 PLN – 50 000 PLN</b>\n"
+            "🕒 Działamy 24/7\n\n"
+            "👇 Wybierz, co chcesz zrobić:"
         ),
         reply_markup=reply_markup,
         parse_mode=ParseMode.HTML
@@ -84,16 +63,16 @@ async def button_handler(update: Update, context: CallbackContext):
     data = query.data
 
     if data == 'deposit':
-        keyboard = [[InlineKeyboardButton(name, callback_data=f"crypto|{name}")] for name in crypto_wallets.keys()]
+        keyboard = [[InlineKeyboardButton(name, callback_data=f"crypto|{name}")] for name in crypto_wallets]
         reply_markup = InlineKeyboardMarkup(keyboard)
-        await query.edit_message_text("💰 Wybierz kryptowalutę do wpłaty:", reply_markup=reply_markup)
+        await query.message.reply_text("💰 Wybierz kryptowalutę do wpłaty:", reply_markup=reply_markup)
 
     elif data == 'withdraw':
         reply_markup = InlineKeyboardMarkup(withdraw_methods_buttons)
-        await query.edit_message_text("💸 Wybierz metodę wypłaty:", reply_markup=reply_markup)
+        await query.message.reply_text("💸 Wybierz metodę wypłaty:", reply_markup=reply_markup)
 
     elif data == 'balance':
-        await query.edit_message_text(
+        await query.message.reply_text(
             "<b>💰 Twoje saldo:</b>\n0.00 PLN",
             parse_mode=ParseMode.HTML
         )
@@ -102,6 +81,7 @@ async def button_handler(update: Update, context: CallbackContext):
         _, name = data.split("|")
         address = crypto_wallets.get(name, "Brak adresu")
 
+        # Generowanie QR
         qr = qrcode.make(address)
         bio = BytesIO()
         bio.name = 'qr.png'
@@ -121,25 +101,23 @@ async def button_handler(update: Update, context: CallbackContext):
 
     elif data.startswith("withdraw|"):
         _, method = data.split("|")
-        await query.edit_message_text(
-            f"✅ Jeżeli wpłaciłeś swoje kryptowaluty, skontaktuj się z <a href='https://t.me/cocaine7_11'>@cocaine7_11</a> i wyślij mu potwierdzenie wysłania krypto.\n"
-            "📨 Czekaj na odpowiedź.",
+        await query.message.reply_text(
+            f"✅ Jeżeli już wysłałeś kryptowaluty, napisz do <a href='https://t.me/cocaine7_11'>@cocaine7_11</a> z potwierdzeniem.",
             parse_mode=ParseMode.HTML
         )
 
 async def check_admin(update: Update, context: CallbackContext):
     if update.effective_user.id != ADMIN_ID:
         return await update.message.reply_text("⛔ Brak dostępu.")
-    await update.message.reply_text("🛡️ Panel admina — brak automatycznego monitoringu. Sprawdź saldo w portfelu ręcznie.")
+    await update.message.reply_text("🛡️ Panel admina – brak automatycznego monitoringu, sprawdź saldo ręcznie.")
 
-# --- START BOTA ---
+# --- START ---
 if __name__ == '__main__':
-    keep_alive()  # <-- uruchamia serwer Flask
+    app = ApplicationBuilder().token(BOT_TOKEN).build()
 
-    app_telegram = ApplicationBuilder().token(BOT_TOKEN).build()
-    app_telegram.add_handler(CommandHandler("start", start))
-    app_telegram.add_handler(CommandHandler("check_admin", check_admin))
-    app_telegram.add_handler(CallbackQueryHandler(button_handler))
+    app.add_handler(CommandHandler("start", start))
+    app.add_handler(CommandHandler("check_admin", check_admin))
+    app.add_handler(CallbackQueryHandler(button_handler))
 
     print("🤖 Bot działa...")
-    app_telegram.run_polling()
+    app.run_polling()
