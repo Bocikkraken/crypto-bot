@@ -54,7 +54,7 @@ async def start(update: Update, context: CallbackContext):
             "<b>🤖 WITAJ W AUTOMATYCZNYM KANTORZE KRYPTOWALUT!</b>\n\n"
             "💸 Wymieniaj <b>Bitcoin, Ethereum, USDT, Litecoin</b>\n"
             "➡️ Na <b>Blik, PayPal, Revolut, Zen, Przelew (PL/EU)</b>\n\n"
-            "💰 Kwota: <b>150 PLN – 50 000 PLN</b>\n"
+            "💰 Kwota: <b>100 PLN – 50 000 PLN</b>\n"
             "🕒 Działamy 24/7\n\n"
             "👇 Wybierz, co chcesz zrobić:"
         ),
