@@ -9,6 +9,10 @@ from telegram.ext import (
 from telegram.constants import ParseMode
 import qrcode
 from io import BytesIO
+from keep_alive import keep_alive
+
+# --- URUCHOMIENIE SERWERA DO UPTIMEROBOT ---
+keep_alive()
 
 # --- KONFIGURACJA ---
 BOT_TOKEN = os.getenv("BOT_TOKEN") or "7725138343:AAEXXIz0nCk6tn0vx6X1lI7b5Ex_iM9NhKI"
