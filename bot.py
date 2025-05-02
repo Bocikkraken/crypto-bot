@@ -100,7 +100,7 @@ async def button_handler(update: Update, context: CallbackContext):
             caption=(
                 f"<b>{name}</b>\n\n"
                 f"🔗 Adres portfela:\n<code>{address}</code>\n\n"
-                "📩 Wyślij min 150 PLN, max 50 000 PLN.\n"
+                "📩 Wyślij min 100 PLN, max 50 000 PLN.\n"
                 "✅ Po wpłacie wróć i wybierz metodę wypłaty."
             ),
             parse_mode=ParseMode.HTML
