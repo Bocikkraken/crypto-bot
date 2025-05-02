@@ -1,5 +1,7 @@
 import os
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from keep_alive import keep_alive
+keep_alive()
 from telegram.ext import (
     ApplicationBuilder,
     CommandHandler,
@@ -9,7 +11,6 @@ from telegram.ext import (
 from telegram.constants import ParseMode
 import qrcode
 from io import BytesIO
-from keep_alive import keep_alive
 
 # --- URUCHOMIENIE SERWERA DO UPTIMEROBOT ---
 keep_alive()
