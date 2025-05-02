@@ -41,7 +41,7 @@ async def start(update: Update, context: CallbackContext):
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    photo_url = "https://i.imgur.com/f2dZ9sl.jpeg"  # Użyj własnego linku do zdjęcia
+    photo_url = "https://imgur.com/a/2KWxJsC.jpeg"  # Użyj własnego linku do zdjęcia
 
     await update.message.reply_photo(
         photo=photo_url,
