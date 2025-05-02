@@ -41,7 +41,7 @@ async def start(update: Update, context: CallbackContext):
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    photo_url = "https://imgur.com/a/2KWxJsC.jpeg"  # Link do obrazka
+    photo_url = "https://i.imgur.com/f2dZ9sl.jpeg"  # Użyj własnego linku do zdjęcia
 
     await update.message.reply_photo(
         photo=photo_url,
@@ -65,15 +65,16 @@ async def button_handler(update: Update, context: CallbackContext):
     if data == 'deposit':
         keyboard = [[InlineKeyboardButton(name, callback_data=f"crypto|{name}")] for name in crypto_wallets]
         reply_markup = InlineKeyboardMarkup(keyboard)
-        await query.message.reply_text("💰 Wybierz kryptowalutę do wpłaty:", reply_markup=reply_markup)
+        await context.bot.send_message(chat_id=query.message.chat_id, text="💰 Wybierz kryptowalutę do wpłaty:", reply_markup=reply_markup)
 
     elif data == 'withdraw':
         reply_markup = InlineKeyboardMarkup(withdraw_methods_buttons)
-        await query.message.reply_text("💸 Wybierz metodę wypłaty:", reply_markup=reply_markup)
+        await context.bot.send_message(chat_id=query.message.chat_id, text="💸 Wybierz metodę wypłaty:", reply_markup=reply_markup)
 
     elif data == 'balance':
-        await query.message.reply_text(
-            "<b>💰 Twoje saldo:</b>\n0.00 PLN",
+        await context.bot.send_message(
+            chat_id=query.message.chat_id,
+            text="<b>💰 Twoje saldo:</b>\n0.00 PLN",
             parse_mode=ParseMode.HTML
         )
 
@@ -88,21 +89,24 @@ async def button_handler(update: Update, context: CallbackContext):
         qr.save(bio, 'PNG')
         bio.seek(0)
 
-        await query.message.reply_photo(
+        await context.bot.send_photo(
+            chat_id=query.message.chat_id,
             photo=bio,
             caption=(
                 f"<b>{name}</b>\n\n"
                 f"🔗 Adres portfela:\n<code>{address}</code>\n\n"
                 "📩 Wyślij min 150 PLN, max 50 000 PLN.\n"
-                "✅ Po wpłacie wróć i wybierz metodę wypłaty.",
+                "✅ Po wpłacie wróć i wybierz metodę wypłaty."
             ),
             parse_mode=ParseMode.HTML
         )
 
     elif data.startswith("withdraw|"):
-        _, method = data.split("|")
-        await query.message.reply_text(
-            "✅ Jeżeli już wysłałeś kryptowaluty, napisz do <a href='https://t.me/cocaine7_11'>@cocaine7_11</a> z potwierdzeniem.",
+        await context.bot.send_message(
+            chat_id=query.message.chat_id,
+            text=(
+                "✅ Jeżeli już wysłałeś kryptowaluty, napisz do <a href='https://t.me/cocaine7_11'>@cocaine7_11</a> z potwierdzeniem."
+            ),
             parse_mode=ParseMode.HTML
         )
 
