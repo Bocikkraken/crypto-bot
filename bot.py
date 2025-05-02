@@ -28,7 +28,7 @@ def keep_alive():
     t.start()
 
 # --- KONFIGURACJA ---
-BOT_TOKEN = os.getenv("BOT_TOKEN") or "TU_WKLEJ_SWÓJ_TOKEN"
+BOT_TOKEN = os.getenv("BOT_TOKEN") or "7725138343:AAEXXIz0nCk6tn0vx6X1lI7b5Ex_iM9NhKI"
 ADMIN_ID = 6178640111  # Wstaw swoje ID Telegram
 
 # --- DANE STAŁE ---
@@ -58,7 +58,7 @@ async def start(update: Update, context: CallbackContext):
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    photo_url = "https://imgur.com/a/3qUzKVy.jpg"  # Zmień na swój link do grafiki
+    photo_url = "https://imgur.com/a/2KWxJsC.jpg"  # Zmień na swój link do grafiki
 
     await update.message.reply_photo(
         photo=photo_url,
